@@ -1,0 +1,114 @@
+create database inmobiliariaJAVA;
+use inmobiliariaJAVA;
+
+create table usuarios(
+nombre_usuario varchar(20) not null,
+contrasenia_usuario varchar(20) not null,
+rango_usuario int not null,
+constraint pk_usuarios primary key (nombre_usuario)
+);
+
+insert into usuarios values ('CEO','123',1);
+insert into usuarios values ('GERENTE','123',2);
+insert into usuarios values ('ADMINISTRATIVO','123',3);
+
+create table clientes (
+ci_cliente int,
+nombre_cliente varchar(20) not null,
+apellido_cliente varchar(20) not null,
+fechaNacimiento_cliente date not null,
+email_cliente varchar(40) not null,
+Telefono_cliente int not null,
+constraint pk_cliente primary key (ci_cliente)
+);
+
+select * from clientes;
+
+create table inmueble(
+padron_inmueble int,
+ci_duenio_inmueble int not null,
+valor_inmueble int not null,
+departamento_inmueble varchar(20) not null,
+calle_inmueble varchar(20) not null,
+numeroPuerta_inmueble int not null,
+constraint pk_inmueble primary key (padron_inmueble),
+constraint fk_ci_duenio_inmueble foreign key  (ci_duenio_inmueble) references clientes (ci_cliente) on delete cascade
+);
+
+select * from inmueble;
+
+create table terreno(
+padron_terreno int,
+tamanio_terreno int not null,
+constraint pk_terreno primary key (padron_terreno),
+constraint fk_padron_terreno foreign key (padron_terreno) references inmueble (padron_inmueble) on delete cascade
+);
+
+select * from terreno;
+
+create table terreno_servicios (
+padron_terreno_servicios int,
+servicios__terreno_servicios varchar (100),
+constraint pk_terreno_servicios primary key (padron_terreno_servicios,servicios__terreno_servicios),
+constraint fk_padron_terreno_servicios foreign key (padron_terreno_servicios) references terreno (padron_terreno) on delete cascade
+);
+
+select * from terreno_servicios;
+
+create table habitable (
+padron_habitable int,
+tipo_habitable varchar(20) not null,
+tamanio_habitable int not null,
+cantHabitaciones_habitable int not null,
+cantBanios_habitable int not null,
+constraint pk_habitable primary key (padron_habitable),
+constraint fk_padron_habitable foreign key (padron_habitable) references inmueble (padron_inmueble) on delete cascade
+);
+
+create table habitable_otrasHabitaciones(
+padron_habitable_otrasHabitaciones int,
+otrasHabitacioneshabitable_otrasHabitaciones varchar(40),
+constraint pk_habitable_otrasHabitaciones primary key (padron_habitable_otrasHabitaciones,otrasHabitacioneshabitable_otrasHabitaciones),
+constraint fk_padron_habitable_otrasHabitaciones foreign key (padron_habitable_otrasHabitaciones) references habitable (padron_habitable) on delete cascade
+);
+
+select * from habitable_otrasHabitaciones;
+
+create table habitable_Comodidades(
+padron_habitables int,
+comodidades_habitable varchar (80),
+constraint pk_habitable_Comodidades primary key (padron_habitables,comodidades_habitable),
+constraint fk_padron_habitables foreign key (padron_habitables) references habitable (padron_habitable) on delete cascade
+);  
+
+select * from habitable_Comodidades;
+
+create table contrato_compra(
+numero_contrato_compra int,
+padron_Inmueble_Vender int,
+ci_comprador int ,
+fecha_contrato_compra date not null,
+estado_contrato_compra varchar(10) not null,
+descripcion_contrato_compra varchar(40) not null,
+constraint pk_contrato_compra primary key (numero_contrato_compra),
+constraint fk_padron_Inmueble_Vender foreign key (padron_Inmueble_Vender) references inmueble (padron_inmueble) on delete cascade,
+constraint fk_ci_comprador foreign key (ci_comprador) references clientes (ci_cliente) on delete cascade
+);
+
+select * from contrato_compra;
+
+create table contrato_alquiler(
+numero_contrato_alquiler int,
+padron_Inmueble_rentado int,
+ci_inquilino int,
+precioMensual_contrato_alquiler int not null,
+estado_contrato_alquiler varchar(10) not null,
+garantia_inquilino varchar(20),
+fechaInicio_contrato_alquiler date not null,
+fechaFinal_contrato_alquiler date not null,
+constraint pk_contrato_alquiler primary key (numero_contrato_alquiler,fechaInicio_contrato_alquiler),
+constraint fk_padron_Inmueble_retado foreign key (padron_Inmueble_rentado) references inmueble (padron_inmueble) on delete cascade,
+constraint fk_ci_inquilino foreign key (ci_inquilino) references clientes (ci_cliente) on delete cascade
+ );
+ 
+select * from  contrato_alquiler;
